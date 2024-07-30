@@ -1,0 +1,37 @@
+<section class="hero">
+  <div class="hero_content">
+    <h1>Connectez-vous</h1>
+  </div>
+</section>
+
+<div class="centered-connection-container">
+  <form class="text-center" id="loginForm">
+    <div class="mb-3 mt-3">
+      <label for="inputUsername" class="form-label">Nom d'utilisateur</label>
+      <input
+        type="username"
+        class="form-control"
+        id="inputUsername"
+        name="username"
+        aria-describedby="usernameHelp"
+        placeholder="Nom d'utilisateur"
+      />
+      <div class="invalid-feedback">
+        Le nom d'utilisateur et le mot de passe ne correspondent pas
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="inputPassword" class="form-label">Mot de passe</label>
+      <input
+        type="password"
+        class="form-control"
+        id="inputPassword"
+        name="password"
+        placeholder="Mot de passe"
+      />
+    </div>
+    <button type="button" class="btn btn-primary" id="btnLogin">
+      Connexion
+    </button>
+  </form>
+</div>

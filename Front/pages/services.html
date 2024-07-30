@@ -1,0 +1,231 @@
+<!-- Section 1: Hero -->
+
+<section class="hero">
+  <div class="hero_content text-center">
+    <h1>Nos services</h1>
+  </div>
+</section>
+
+<!-- Section 2: Restauration -->
+
+<div class="container mt-5">
+  <div id="servicesContainer">
+    <div class="service">
+      <img
+        src="../img/zoo restaurant 2.jpg"
+        alt="Service de restauration"
+        class="service-image"
+      />
+      <div class="service-details">
+        <h3 class="service-title">Restauration</h3>
+        <p class="service-description">
+          Profitez également de notre service de restauration au Zoo d'Arcadia,
+          où vous pourrez savourer une délicieuse pause gastronomique au cœur de
+          la nature. Nos options de restauration sont soigneusement
+          sélectionnées pour satisfaire tous les goûts, allant des collations
+          légères aux repas complets. Que vous souhaitiez vous détendre avec une
+          boisson rafraîchissante ou déguster un délicieux repas en famille,
+          notre équipe est là pour vous offrir une expérience culinaire
+          inoubliable lors de votre visite
+        </p>
+      </div>
+      <div class="edit-delete-buttons" data-show="admin">
+        <button
+          class="btn btn-primary btn-outline-light edit-service-btn"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+        >
+          <i class="bi bi-pencil-square"></i>
+        </button>
+        <button
+          class="btn btn-danger delete-service-btn"
+          data-bs-toggle="modal"
+          data-bs-target="#deleteModal"
+        >
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+    <div class="service">
+      <img
+        src="../img/zoo crossroad.jpg"
+        alt="Service 2"
+        class="service-image"
+      />
+      <div class="service-details">
+        <h3 class="service-title">Visite des habitats</h3>
+        <p class="service-description">
+          Explorez les habitats en compagnie de nos guides expérimentés lors
+          d'une visite guidée gratuite au Zoo d'Arcadia. Découvrez les secrets
+          de la savane, de la jungle et des marais tout en apprenant sur la
+          faune fascinante qui y réside. Nos guides passionnés vous offriront
+          des informations captivantes et des anecdotes sur les animaux,
+          garantissant une expérience enrichissante.
+        </p>
+      </div>
+      <div class="edit-delete-buttons" data-show="admin">
+        <button
+          class="btn btn-primary btn-outline-light edit-service-btn"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+        >
+          <i class="bi bi-pencil-square"></i>
+        </button>
+        <button
+          class="btn btn-danger delete-service-btn"
+          data-bs-toggle="modal"
+          data-bs-target="#deleteModal"
+        >
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+    <div class="service">
+      <img src="../img/zoo train.jpg" alt="Service 3" class="service-image" />
+      <div class="service-details">
+        <h3 class="service-title">Visite de zoo en petit train</h3>
+        <p class="service-description">
+          Embarquez pour une aventure unique à bord de notre petit train lors de
+          la visite du Zoo d'Arcadia. Parcourez les allées du zoo en toute
+          commodité et confort, tout en découvrant nos pensionnaires sous un
+          nouvel angle. Notre petit train vous offre une expérience pittoresque
+          et divertissante, idéale pour les visiteurs de tous âges. Ne manquez
+          pas cette occasion de découvrir notre zoo de manière ludique et
+          mémorable !
+        </p>
+      </div>
+      <div class="edit-delete-buttons" data-show="admin">
+        <button
+          class="btn btn-primary btn-outline-light edit-service-btn"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+        >
+          <i class="bi bi-pencil-square"></i>
+        </button>
+        <button
+          class="btn btn-danger delete-service-btn"
+          data-bs-toggle="modal"
+          data-bs-target="#deleteModal"
+        >
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="text-center" data-show="admin">
+    <button
+      id="add-service-btn"
+      class="btn btn-primary text-white mt-4"
+      data-bs-toggle="modal"
+      data-bs-target="#exampleModal"
+    >
+      Ajouter un service
+    </button>
+  </div>
+
+  <!-- Modal  -->
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">
+            Ajouter ou modifer un service
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form id="service-form">
+            <div class="form-group">
+              <label for="service-name">Nom du service</label>
+              <input
+                type="text"
+                class="form-control"
+                id="service-name"
+                name="service-name"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="service-description">Description du service</label>
+              <textarea
+                class="form-control"
+                id="service-description"
+                name="service-description"
+                rows="3"
+                required
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label for="service-image">Image</label>
+              <input
+                type="file"
+                class="form-control-file"
+                id="service-image"
+                name="service-image"
+                required
+              />
+            </div>
+            <input type="hidden" id="edit-index" />
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Fermer
+          </button>
+          <button type="button" class="btn btn-primary" id="addServiceButton">
+            Enregistrer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-1"
+    aria-labelledby="deleteServiceModal"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="deleteServiceModal">
+            Etes vous sur de vouloir supprimer le service ?
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+          Ne pas supprimer
+        </button>
+        <button type="button" class="btn btn-danger">Supprimer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

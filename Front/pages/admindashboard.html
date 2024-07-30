@@ -1,0 +1,98 @@
+<section class="hero">
+  <div class="hero_content">
+    <h1>Espace admin</h1>
+  </div>
+</section>
+
+<!-- Section : Account creation -->
+<section>
+  <div class="hero-scene text-center text-white">
+    <div class="hero-scene-content">
+      <h1>Création de compte</h1>
+    </div>
+  </div>
+  <div class="container mt-5">
+    <form id="account-creation-form" novalidate>
+      <div class="mb-3">
+        <label for="NomInput" class="form-label">Nom</label>
+        <input
+          type="text"
+          class="form-control"
+          id="NomInput"
+          placeholder="Arbo"
+          name="nom"
+          required
+        />
+        <div class="invalid-feedback">Le nom est obligatoire.</div>
+      </div>
+      <div class="mb-3">
+        <label for="PrenomInput" class="form-label">Prénom</label>
+        <input
+          type="text"
+          class="form-control"
+          id="PrenomInput"
+          placeholder="José"
+          name="prenom"
+          required
+        />
+        <div class="invalid-feedback">Prénom est obligatoire.</div>
+      </div>
+      <div class="mb-3">
+        <label for="UsernameInput" class="form-label"
+          >Nom d'utilisateur unique</label
+        >
+        <input
+          type="text"
+          class="form-control"
+          id="UsernameInput"
+          placeholder="JoseARBO"
+          name="username"
+          required
+        />
+        <div class="invalid-feedback">
+          Le nom d'utilisateur est obligatoire.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="PasswordInput" class="form-label">Mot de passe</label>
+        <input
+          type="password"
+          class="form-control"
+          id="PasswordInput"
+          name="password"
+          required
+        />
+        <div class="invalid-feedback">
+          Le mot de passe doit être fort et contenir au moins 8 caractères,
+          composés d'une lettre majuscule, d'une lettre minuscule, d'un chiffre
+          et d'un caractère spécial.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="ValidatePasswordInput" class="form-label"
+          >Validez le mot de passe</label
+        >
+        <input
+          type="password"
+          class="form-control"
+          id="ValidatePasswordInput"
+          name="passwordConfirm"
+          required
+        />
+        <div class="invalid-feedback">
+          La confirmation du mot de passe doit correspondre au mot de passe.
+        </div>
+      </div>
+      <div class="text-center">
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="btnCreationForm"
+          disabled
+        >
+          Créé le compte
+        </button>
+      </div>
+    </form>
+  </div>
+</section>

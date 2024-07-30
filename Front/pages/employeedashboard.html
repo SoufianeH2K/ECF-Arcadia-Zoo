@@ -1,0 +1,81 @@
+<section class="hero">
+  <div class="hero_content">
+    <h1>Espace du personnel</h1>
+  </div>
+</section>
+
+<!-- Modification des services -->
+
+<div class="container home_section" id="servicesContainer">
+  <div class="row row-cols-2 mt-2">
+    <div class="col">
+      <h1>*** title ***</h1>
+      <p>*** description ***</p>
+    </div>
+    <div class="col">
+      <img
+        src="***"
+        alt="***"
+        class="img-fluid rounded"
+      />
+    </div>
+  </div>
+</div>
+
+
+<!-- Ajout des consommation de nouriture pour animeaux -->
+
+<div class="form mt-3 mx-3">
+  <h2>Details de la nourriture</h2>
+  <form id="feedingForm">
+    <label for="animal_id">Animal ID:</label>
+    <input type="number" id="animal_id" name="animal_id" required><br><br>
+
+    <label for="type">Type of Food:</label>
+    <input type="text" id="type" name="type" required><br><br>
+
+    <label for="quantite">Quantity (grams):</label>
+    <input type="number" id="quantite" name="quantite" step="0.01" required><br><br>
+
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date" required><br><br>
+
+    <label for="time">Time:</label>
+    <input type="time" id="time" name="time" required><br><br>
+
+    <button type="button" onclick="submitFeedingData()">Submit</button>
+</form>
+</div>
+
+<!-- Validation des avis -->
+
+<div class="container mt-3">
+  <h2 class="text-center">Les avis des visiteurs</h1>
+  <table class="table table bordered" id="commentsTable">
+    <thead>
+
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Pseudo</th>
+        <th scope="col">Visible sur la page d'acceuil ?</th>
+        <th scope="col">Modifier la visibilité ici</th>
+        <th scope="col">Commentaire</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+    </tbody>
+    <tfoot>
+    </tfoot>
+    <div class="input" name="commentsToDisplay" id="commentsToDisplay">
+      <form id="formCommentsDisplay">
+        Vous voulez afficher les commentaires de:
+        <input name="from" id="inputCommentsDisplayFrom"></input> à:
+        <input name="to" id="inputCommentsDisplayTo"></input>
+        <button type="button" class="btn btn-primary text-white" id="displayComments">Afficher</button>
+      </form>
+      
+    </div>
+  </table>
+</div>
+
