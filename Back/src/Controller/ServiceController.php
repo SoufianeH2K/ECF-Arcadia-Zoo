@@ -52,11 +52,26 @@ class ServiceController extends AbstractController
      */
     public function new(Request $request): JsonResponse
     {
-        $service = $this->serializer->deserialize($request->getContent(), Service::class, 'json');
+        // Create a new Service instance
+        $service = new Service();
 
+        // Handle file upload for service_image
+        $formData = $request->files->get('service_image');
+        if ($formData) {
+            $fileContent = file_get_contents($formData->getPathname());
+            $service->setServiceImage($fileContent);
+        }
+
+        // Deserialize other fields
+        $data = json_decode($request->getContent(), true);
+        $service->setNom($data['nom']);
+        $service->setDescription($data['description']);
+
+        // Persist and flush the new service
         $this->manager->persist($service);
         $this->manager->flush();
 
+        // Generate response data and location header
         $responseData = $this->serializer->serialize($service, 'json');
         $location = $this->urlGenerator->generate(
             'app_api_service_show',
@@ -66,6 +81,8 @@ class ServiceController extends AbstractController
 
         return new JsonResponse($responseData, Response::HTTP_CREATED, ["Location" => $location], true);
     }
+
+
 
     #[Route('/{id}', name: 'show', methods: 'GET')]
     /** @OA\Get(
@@ -99,9 +116,15 @@ class ServiceController extends AbstractController
     {
         $service = $this->repository->findOneBy(['id' => $id]);
         if ($service) {
-            $responseData = $this->serializer->serialize($service, 'json');
+            // Convert the image to Base64 for JSON response if needed
+            $responseData = [
+                'id' => $service->getId(),
+                'nom' => $service->getNom(),
+                'description' => $service->getDescription(),
+                'service_image' => $service->getImageBase64(), // Include the Base64 image data
+            ];
 
-            return new JsonResponse($responseData, Response::HTTP_OK, [], true);
+            return new JsonResponse($responseData, Response::HTTP_OK);
         }
 
         return new JsonResponse(null, Response::HTTP_NOT_FOUND);
@@ -142,12 +165,17 @@ class ServiceController extends AbstractController
     {
         $service = $this->repository->findOneBy(['id' => $id]);
         if ($service) {
-            $service = $this->serializer->deserialize(
-                $request->getContent(),
-                Service::class,
-                'json',
-                [AbstractNormalizer::OBJECT_TO_POPULATE => $service]
-            );
+            // Handle file upload for service_image if a new one is provided
+            $formData = $request->files->get('service_image');
+            if ($formData) {
+                $fileContent = file_get_contents($formData->getPathname());
+                $service->setServiceImage($fileContent);
+            }
+
+            // Deserialize other fields and update the service
+            $data = json_decode($request->getContent(), true);
+            $service->setNom($data['nom']);
+            $service->setDescription($data['description']);
 
             $this->manager->flush();
 

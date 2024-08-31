@@ -54,10 +54,10 @@ class Service
 
     public function getServiceImage()
     {
-        return $this->service_image;
+        return stream_get_contents($this->service_image);
     }
 
-    public function setServiceImage($service_image): static
+    public function setServiceImage($service_image): self
     {
         $this->service_image = $service_image;
 

@@ -38,7 +38,7 @@ function getComments(i) {
         document.getElementById(`comment-row-${data.id}`)
       ) {
         console.log("Comment already displayed or invalid:", data);
-        return; // Skip if already displayed or invalid
+        return; 
       }
 
       const dataVisibility = data.isVisible ? "Oui" : "Non";
@@ -116,40 +116,6 @@ function updateVisibility(commentId, selectElement) {
     });
 }
 
-// Update of services
-const servicesContainer = document.getElementById("servicesContainer");
-/*
-function getServices(i) {
-  fetch(apiUrl + `service/${i}`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.id === undefined || typeof data.id !== "number") {
-        console.log("Service already displayed or invalid:", data);
-        return; // Skip if already displayed or invalid
-      }
-*/
-let template = `
-                  <div class="row row-cols-2 mt-2">
-                    <div class="col">
-                      <h1>*** title ***</h1>
-                      <p>*** description ***</p>
-                    </div>
-                    <div class="col">
-                      <img
-                        src="https://images.unsplash.com/photo-1715787803917-d25f112866fe?q=80&w=2487&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="***"
-                        class="img-fluid rounded"
-                      />
-                    </div>
-                  </div>
-                     `;
-servicesContainer.insertAdjacentHTML("beforeend", template);
-/*   })
-    .catch((error) => console.error("Error fetching data:", error));
-}*/
 
 // Adding animal food to the database
 
@@ -186,3 +152,97 @@ function submitFeedingData() {
       alert("Échec de l'envoi des informations sur la nourriture.");
     });
 }
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  const serviceTable = document.getElementById('serviceTable').getElementsByTagName('tbody')[0];
+  const saveServiceButton = document.getElementById('saveService');
+  const serviceModal = new bootstrap.Modal(document.getElementById('serviceModal'));
+
+  // Function to fetch and display services
+  async function fetchServices() {
+      const response = await fetch('/api/services');
+      const services = await response.json();
+
+      serviceTable.innerHTML = ''; // Clear existing rows
+
+      services.forEach(service => {
+          const row = serviceTable.insertRow();
+          row.innerHTML = `
+              <td>${service.id}</td>
+              <td>${service.nom}</td>
+              <td>${service.description}</td>
+              <td><img src="/path/to/image/${service.id}" alt="Service Image" class="img-thumbnail" style="width: 100px;"></td>
+              <td>
+                  <button class="btn btn-warning btn-sm editService" data-id="${service.id}">Edit</button>
+                  <button class="btn btn-danger btn-sm deleteService" data-id="${service.id}">Delete</button>
+              </td>
+          `;
+      });
+
+      attachEventListeners();
+  }
+
+  // Event listener for Save Service button
+  saveServiceButton.addEventListener('click', async function() {
+      const id = document.getElementById('serviceId').value;
+      const nom = document.getElementById('nom').value;
+      const description = document.getElementById('description').value;
+      const service_image = document.getElementById('service_image').files[0];
+
+      const formData = new FormData();
+      formData.append('nom', nom);
+      formData.append('description', description);
+      formData.append('service_image', service_image);
+
+      let url = '/api/services';
+      let method = 'POST';
+
+      if (id) {
+          url += `/${id}`;
+          method = 'PUT';
+      }
+
+      await fetch(url, {
+          method: method,
+          body: formData,
+      });
+
+      serviceModal.hide();
+      fetchServices();
+  });
+
+  // Event listeners for Edit and Delete buttons
+  function attachEventListeners() {
+      document.querySelectorAll('.editService').forEach(button => {
+          button.addEventListener('click', async function() {
+              const id = this.getAttribute('data-id');
+              const response = await fetch(`/api/services/${id}`);
+              const service = await response.json();
+
+              document.getElementById('serviceId').value = service.id;
+              document.getElementById('nom').value = service.nom;
+              document.getElementById('description').value = service.description;
+              // Note: service_image cannot be pre-populated for security reasons.
+
+              document.getElementById('serviceModalLabel').textContent = 'Edit Service';
+              serviceModal.show();
+          });
+      });
+
+      document.querySelectorAll('.deleteService').forEach(button => {
+          button.addEventListener('click', async function() {
+              const id = this.getAttribute('data-id');
+
+              await fetch(`/api/services/${id}`, {
+                  method: 'DELETE',
+              });
+
+              fetchServices();
+          });
+      });
+  }
+
+  // Initial fetch of services
+  fetchServices();
+});
