@@ -97,50 +97,68 @@ addServiceButton.addEventListener('click', function() {
 
 // Event listener for Save Service button
 saveServiceButton.addEventListener('click', async function() {
-    console.log('Save button clicked'); // Debugging line
+  console.log('Save button clicked'); // Debugging line
 
-    const id = document.getElementById('serviceId').value;
-    const nom = document.getElementById('nom').value;
-    const description = document.getElementById('description').value;
-    const service_image = document.getElementById('service_image').files[0];
+  const fromId = parseInt(document.getElementById('serviceIdFrom').value, 10);
+  const toId = parseInt(document.getElementById('serviceIdTo').value, 10);
 
-    console.log('Service details:', { id, nom, description, service_image }); // Debugging line
+  if (isNaN(fromId) || isNaN(toId) || fromId > toId) {
+      console.error('Invalid input values');
+      alert('Please enter a valid range of service IDs.');
+      return;
+  }
 
-    const formData = new FormData();
-    formData.append('nom', nom);
-    formData.append('description', description);
-    if (service_image) {
-        formData.append('service_image', service_image);
-    }
+  const id = document.getElementById('serviceId').value;
+  const nom = document.getElementById('nom').value;
+  const description = document.getElementById('description').value;
+  const service_image = document.getElementById('service_image').files[0];
 
-    let url = '/api/service';  // Base URL for the API route
-    let method = 'POST';
+  console.log('Service details:', { id, nom, description, service_image }); // Debugging line
 
-    if (id) {
-        url += `/${id}`;
-        method = 'PUT';
-    }
+  const formData = new FormData();
+  formData.append('nom', nom);
+  formData.append('description', description);
+  if (service_image) {
+      formData.append('service_image', service_image);
+  }
 
-    try {
-        const response = await fetch(url, {
-            method: method,
-            body: formData,
-        });
+  let url = `https://127.0.0.1:8000/api/service`;  // Base URL for the API route
+  let method = 'POST';
 
-        if (!response.ok) {
-            const errorText = await response.text(); // Retrieve and log the error message
-            throw new Error(`Failed to save service: ${errorText}`);
-        }
+  if (id) {
+      url += `/${id}`;
+      method = 'PUT';
+  }
 
-        console.log('Service saved successfully'); // Debugging line
+  try {
+      const response = await fetch(url, {
+          method: method,
+          body: formData,
+      });
 
-        serviceModal.hide();
-        fetchServicesInRange(fromId, toId); // Refresh the list of services after saving
-    } catch (error) {
-        console.error('Error saving service:', error);
-        alert('Failed to save the service. Please try again.');
-    }
+      // Log the raw response to see what's being returned
+      const rawResponseText = await response.text();
+      console.log('Raw response text:', rawResponseText);
+
+      if (!response.ok) {
+          throw new Error(`Failed to save service: ${rawResponseText}`);
+      }
+
+      const responseData = JSON.parse(rawResponseText); // Parse the JSON response
+      console.log('Server response:', responseData); // Log the server's response
+
+      console.log('Service saved successfully'); // Debugging line
+
+      serviceModal.hide();
+      fetchServicesInRange(fromId, toId); // Refresh the list of services after saving
+  } catch (error) {
+      console.error('Error saving service:', error);
+      alert('Failed to save the service. Please try again.');
+  }
 });
+
+
+
 
 // Event listeners for Edit and Delete buttons
 function attachEventListeners() {

@@ -50,43 +50,32 @@ class ServiceController extends AbstractController
      *     )
      * )
      */
-    public function new(Request $request): JsonResponse
+    public function create(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): JsonResponse
     {
         try {
-            // Create a new Service instance
+            // Deserialize the request data to a Service entity
             $service = new Service();
-
-            // Handle file upload for service_image
             $formData = $request->files->get('service_image');
             if ($formData) {
                 $fileContent = file_get_contents($formData->getPathname());
                 $service->setServiceImage($fileContent);
             }
 
-            // Get other fields from the form data
             $service->setNom($request->request->get('nom'));
             $service->setDescription($request->request->get('description'));
 
-            // Persist and flush the new service
-            $this->manager->persist($service);
-            $this->manager->flush();
+            // Persist the new service entity
+            $entityManager->persist($service);
+            $entityManager->flush();
 
-            // Generate response data and location header
-            $responseData = $this->serializer->serialize($service, 'json');
-            $location = $this->urlGenerator->generate(
-                'app_api_service_show',
-                ['id' => $service->getId()],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-
-            return new JsonResponse($responseData, Response::HTTP_CREATED, ["Location" => $location], true);
-
+            // Serialize the response
+            $responseData = $serializer->serialize($service, 'json');
+            return new JsonResponse($responseData, Response::HTTP_CREATED, [], true);
         } catch (\Exception $e) {
-            // Log the error and return a JSON error response
-            $this->get('logger')->error('Error adding service: ' . $e->getMessage());
-            return new JsonResponse(['error' => 'An error occurred while adding the service'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new JsonResponse(['error' => 'Unable to save service'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
 
