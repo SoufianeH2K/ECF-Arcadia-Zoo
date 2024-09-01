@@ -52,35 +52,42 @@ class ServiceController extends AbstractController
      */
     public function new(Request $request): JsonResponse
     {
-        // Create a new Service instance
-        $service = new Service();
+        try {
+            // Create a new Service instance
+            $service = new Service();
 
-        // Handle file upload for service_image
-        $formData = $request->files->get('service_image');
-        if ($formData) {
-            $fileContent = file_get_contents($formData->getPathname());
-            $service->setServiceImage($fileContent);
+            // Handle file upload for service_image
+            $formData = $request->files->get('service_image');
+            if ($formData) {
+                $fileContent = file_get_contents($formData->getPathname());
+                $service->setServiceImage($fileContent);
+            }
+
+            // Get other fields from the form data
+            $service->setNom($request->request->get('nom'));
+            $service->setDescription($request->request->get('description'));
+
+            // Persist and flush the new service
+            $this->manager->persist($service);
+            $this->manager->flush();
+
+            // Generate response data and location header
+            $responseData = $this->serializer->serialize($service, 'json');
+            $location = $this->urlGenerator->generate(
+                'app_api_service_show',
+                ['id' => $service->getId()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            return new JsonResponse($responseData, Response::HTTP_CREATED, ["Location" => $location], true);
+
+        } catch (\Exception $e) {
+            // Log the error and return a JSON error response
+            $this->get('logger')->error('Error adding service: ' . $e->getMessage());
+            return new JsonResponse(['error' => 'An error occurred while adding the service'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        // Deserialize other fields
-        $data = json_decode($request->getContent(), true);
-        $service->setNom($data['nom']);
-        $service->setDescription($data['description']);
-
-        // Persist and flush the new service
-        $this->manager->persist($service);
-        $this->manager->flush();
-
-        // Generate response data and location header
-        $responseData = $this->serializer->serialize($service, 'json');
-        $location = $this->urlGenerator->generate(
-            'app_api_service_show',
-            ['id' => $service->getId()],
-            UrlGeneratorInterface::ABSOLUTE_URL,
-        );
-
-        return new JsonResponse($responseData, Response::HTTP_CREATED, ["Location" => $location], true);
     }
+
 
 
 

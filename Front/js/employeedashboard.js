@@ -7,6 +7,174 @@ const inputCommentsDisplayTo = document.getElementById(
 const displayComments = document.getElementById("displayComments");
 const commentsTable = document.getElementById("commentsTable");
 
+//
+// Ensure elements are available
+const serviceTable = document.getElementById('serviceTable').getElementsByTagName('tbody')[0];
+const addServiceButton = document.getElementById('addService');
+const saveServiceButton = document.getElementById('saveService');
+const serviceModal = new bootstrap.Modal(document.getElementById('serviceModal'));
+const fetchServicesRangeButton = document.getElementById('fetchServicesRange');
+
+// Function to fetch and display a specific service by ID
+function fetchServiceById(serviceId) {
+  const url = `https://127.0.0.1:8000/api/service/${serviceId}`;  // Use https
+
+  fetch(url)
+      .then(response => {
+          console.log('Response headers:', response.headers.get('content-type'));
+          if (!response.ok) {
+              return response.text().then(text => {
+                  throw new Error(`Failed to fetch service with ID ${serviceId}: ${text}`);
+              });
+          }
+
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+              return response.json();
+          } else {
+              return response.text().then(text => {
+                  throw new Error(`Expected JSON, but received HTML. Response: ${text}`);
+              });
+          }
+      })
+      .then(service => {
+          console.log('Service data:', service);
+          const row = serviceTable.insertRow();
+          row.innerHTML = `
+              <td>${service.id}</td>
+              <td>${service.nom}</td>
+              <td>${service.description}</td>
+              <td><img src="data:image/jpeg;base64,${service.service_image}" alt="Service Image" class="img-thumbnail" style="width: 100px;"></td>
+              <td>
+                  <button class="btn btn-warning btn-sm editService" data-id="${service.id}">Edit</button>
+                  <button class="btn btn-danger btn-sm deleteService" data-id="${service.id}">Delete</button>
+              </td>
+          `;
+
+          attachEventListeners();
+      })
+      .catch(error => {
+          console.error(`Error fetching service with ID ${serviceId}:`, error);
+      });
+}
+
+
+
+// Function to fetch services in a range of IDs
+function fetchServicesInRange(fromId, toId) {
+    serviceTable.innerHTML = ''; // Clear existing rows
+
+    for (let id = fromId; id <= toId; id++) {
+        fetchServiceById(id);
+    }
+}
+
+// Event listener for fetching services within a range
+fetchServicesRangeButton.addEventListener('click', function() {
+    const fromId = parseInt(document.getElementById('serviceIdFrom').value, 10);
+    const toId = parseInt(document.getElementById('serviceIdTo').value, 10);
+
+    if (isNaN(fromId) || isNaN(toId) || fromId > toId) {
+        console.error('Invalid input values');
+        return;
+    }
+
+    fetchServicesInRange(fromId, toId);
+});
+
+// Event listener for Add Service button
+addServiceButton.addEventListener('click', function() {
+    // Clear the form fields for new entry
+    document.getElementById('serviceId').value = '';
+    document.getElementById('nom').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('service_image').value = '';
+    document.getElementById('serviceModalLabel').textContent = 'Add Service';
+
+    // Show the modal for adding a new service
+    serviceModal.show();
+});
+
+// Event listener for Save Service button
+saveServiceButton.addEventListener('click', async function() {
+    console.log('Save button clicked'); // Debugging line
+
+    const id = document.getElementById('serviceId').value;
+    const nom = document.getElementById('nom').value;
+    const description = document.getElementById('description').value;
+    const service_image = document.getElementById('service_image').files[0];
+
+    console.log('Service details:', { id, nom, description, service_image }); // Debugging line
+
+    const formData = new FormData();
+    formData.append('nom', nom);
+    formData.append('description', description);
+    if (service_image) {
+        formData.append('service_image', service_image);
+    }
+
+    let url = '/api/service';  // Base URL for the API route
+    let method = 'POST';
+
+    if (id) {
+        url += `/${id}`;
+        method = 'PUT';
+    }
+
+    try {
+        const response = await fetch(url, {
+            method: method,
+            body: formData,
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text(); // Retrieve and log the error message
+            throw new Error(`Failed to save service: ${errorText}`);
+        }
+
+        console.log('Service saved successfully'); // Debugging line
+
+        serviceModal.hide();
+        fetchServicesInRange(fromId, toId); // Refresh the list of services after saving
+    } catch (error) {
+        console.error('Error saving service:', error);
+        alert('Failed to save the service. Please try again.');
+    }
+});
+
+// Event listeners for Edit and Delete buttons
+function attachEventListeners() {
+    document.querySelectorAll('.editService').forEach(button => {
+        button.addEventListener('click', async function() {
+            const id = this.getAttribute('data-id');
+            const response = await fetch(`/api/service/${id}`);  // Corrected to match your API route
+            const service = await response.json();
+
+            document.getElementById('serviceId').value = service.id;
+            document.getElementById('nom').value = service.nom;
+            document.getElementById('description').value = service.description;
+            // Note: service_image cannot be pre-populated for security reasons.
+
+            document.getElementById('serviceModalLabel').textContent = 'Edit Service';
+            serviceModal.show();
+        });
+    });
+
+    document.querySelectorAll('.deleteService').forEach(button => {
+        button.addEventListener('click', async function() {
+            const id = this.getAttribute('data-id');
+
+            await fetch(`/api/service/${id}`, {  // Corrected to match your API route
+                method: 'DELETE',
+            });
+
+            fetchServicesInRange(fromId, toId); // Refresh the list of services after deletion
+        });
+    });
+}
+
+//
+
 displayComments.addEventListener("click", function () {
   const fromId = parseInt(inputCommentsDisplayFrom.value, 10);
   const toId = parseInt(inputCommentsDisplayTo.value, 10);
@@ -152,97 +320,3 @@ function submitFeedingData() {
       alert("Échec de l'envoi des informations sur la nourriture.");
     });
 }
-
-
-document.addEventListener('DOMContentLoaded', function() {
-  const serviceTable = document.getElementById('serviceTable').getElementsByTagName('tbody')[0];
-  const saveServiceButton = document.getElementById('saveService');
-  const serviceModal = new bootstrap.Modal(document.getElementById('serviceModal'));
-
-  // Function to fetch and display services
-  async function fetchServices() {
-      const response = await fetch('/api/services');
-      const services = await response.json();
-
-      serviceTable.innerHTML = ''; // Clear existing rows
-
-      services.forEach(service => {
-          const row = serviceTable.insertRow();
-          row.innerHTML = `
-              <td>${service.id}</td>
-              <td>${service.nom}</td>
-              <td>${service.description}</td>
-              <td><img src="/path/to/image/${service.id}" alt="Service Image" class="img-thumbnail" style="width: 100px;"></td>
-              <td>
-                  <button class="btn btn-warning btn-sm editService" data-id="${service.id}">Edit</button>
-                  <button class="btn btn-danger btn-sm deleteService" data-id="${service.id}">Delete</button>
-              </td>
-          `;
-      });
-
-      attachEventListeners();
-  }
-
-  // Event listener for Save Service button
-  saveServiceButton.addEventListener('click', async function() {
-      const id = document.getElementById('serviceId').value;
-      const nom = document.getElementById('nom').value;
-      const description = document.getElementById('description').value;
-      const service_image = document.getElementById('service_image').files[0];
-
-      const formData = new FormData();
-      formData.append('nom', nom);
-      formData.append('description', description);
-      formData.append('service_image', service_image);
-
-      let url = '/api/services';
-      let method = 'POST';
-
-      if (id) {
-          url += `/${id}`;
-          method = 'PUT';
-      }
-
-      await fetch(url, {
-          method: method,
-          body: formData,
-      });
-
-      serviceModal.hide();
-      fetchServices();
-  });
-
-  // Event listeners for Edit and Delete buttons
-  function attachEventListeners() {
-      document.querySelectorAll('.editService').forEach(button => {
-          button.addEventListener('click', async function() {
-              const id = this.getAttribute('data-id');
-              const response = await fetch(`/api/services/${id}`);
-              const service = await response.json();
-
-              document.getElementById('serviceId').value = service.id;
-              document.getElementById('nom').value = service.nom;
-              document.getElementById('description').value = service.description;
-              // Note: service_image cannot be pre-populated for security reasons.
-
-              document.getElementById('serviceModalLabel').textContent = 'Edit Service';
-              serviceModal.show();
-          });
-      });
-
-      document.querySelectorAll('.deleteService').forEach(button => {
-          button.addEventListener('click', async function() {
-              const id = this.getAttribute('data-id');
-
-              await fetch(`/api/services/${id}`, {
-                  method: 'DELETE',
-              });
-
-              fetchServices();
-          });
-      });
-  }
-
-  // Initial fetch of services
-  fetchServices();
-});
