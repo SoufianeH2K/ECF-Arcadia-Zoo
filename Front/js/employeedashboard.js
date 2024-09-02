@@ -15,9 +15,11 @@ const saveServiceButton = document.getElementById('saveService');
 const serviceModal = new bootstrap.Modal(document.getElementById('serviceModal'));
 const fetchServicesRangeButton = document.getElementById('fetchServicesRange');
 
+let currentServiceId = null;  // Variable to track the current service being edited
+
 // Function to fetch and display a specific service by ID
 function fetchServiceById(serviceId) {
-  const url = `https://127.0.0.1:8000/api/service/${serviceId}`;  // Use https
+  const url = `https://127.0.0.1:8000/api/service/${serviceId}`;
 
   fetch(url)
       .then(response => {
@@ -58,8 +60,6 @@ function fetchServiceById(serviceId) {
       });
 }
 
-
-
 // Function to fetch services in a range of IDs
 function fetchServicesInRange(fromId, toId) {
     serviceTable.innerHTML = ''; // Clear existing rows
@@ -85,6 +85,7 @@ fetchServicesRangeButton.addEventListener('click', function() {
 // Event listener for Add Service button
 addServiceButton.addEventListener('click', function() {
     // Clear the form fields for new entry
+    currentServiceId = null;  // Reset currentServiceId for adding a new service
     document.getElementById('serviceId').value = '';
     document.getElementById('nom').value = '';
     document.getElementById('description').value = '';
@@ -97,23 +98,9 @@ addServiceButton.addEventListener('click', function() {
 
 // Event listener for Save Service button
 saveServiceButton.addEventListener('click', async function() {
-  console.log('Save button clicked'); // Debugging line
-
-  const fromId = parseInt(document.getElementById('serviceIdFrom').value, 10);
-  const toId = parseInt(document.getElementById('serviceIdTo').value, 10);
-
-  if (isNaN(fromId) || isNaN(toId) || fromId > toId) {
-      console.error('Invalid input values');
-      alert('Please enter a valid range of service IDs.');
-      return;
-  }
-
-  const id = document.getElementById('serviceId').value;
   const nom = document.getElementById('nom').value;
   const description = document.getElementById('description').value;
   const service_image = document.getElementById('service_image').files[0];
-
-  console.log('Service details:', { id, nom, description, service_image }); // Debugging line
 
   const formData = new FormData();
   formData.append('nom', nom);
@@ -125,8 +112,8 @@ saveServiceButton.addEventListener('click', async function() {
   let url = `https://127.0.0.1:8000/api/service`;  // Base URL for the API route
   let method = 'POST';
 
-  if (id) {
-      url += `/${id}`;
+  if (currentServiceId) {  // If editing, use PUT method
+      url += `/${currentServiceId}`;
       method = 'PUT';
   }
 
@@ -136,18 +123,11 @@ saveServiceButton.addEventListener('click', async function() {
           body: formData,
       });
 
-      // Log the raw response to see what's being returned
-      const rawResponseText = await response.text();
-      console.log('Raw response text:', rawResponseText);
-
       if (!response.ok) {
-          throw new Error(`Failed to save service: ${rawResponseText}`);
+          throw new Error(`Failed to save service: ${response.statusText}`);
       }
 
-      const responseData = JSON.parse(rawResponseText); // Parse the JSON response
-      console.log('Server response:', responseData); // Log the server's response
-
-      console.log('Service saved successfully'); // Debugging line
+      console.log('Service saved successfully');
 
       serviceModal.hide();
       fetchServicesInRange(fromId, toId); // Refresh the list of services after saving
@@ -159,15 +139,16 @@ saveServiceButton.addEventListener('click', async function() {
 
 
 
-
 // Event listeners for Edit and Delete buttons
 function attachEventListeners() {
     document.querySelectorAll('.editService').forEach(button => {
         button.addEventListener('click', async function() {
             const id = this.getAttribute('data-id');
-            const response = await fetch(`/api/service/${id}`);  // Corrected to match your API route
+            currentServiceId = id;  // Set currentServiceId to the service being edited
+            const response = await fetch(`https://127.0.0.1:8000/api/service/${id}`);  // Fetch the existing service data
             const service = await response.json();
 
+            // Populate the modal with existing data
             document.getElementById('serviceId').value = service.id;
             document.getElementById('nom').value = service.nom;
             document.getElementById('description').value = service.description;
@@ -182,14 +163,30 @@ function attachEventListeners() {
         button.addEventListener('click', async function() {
             const id = this.getAttribute('data-id');
 
-            await fetch(`/api/service/${id}`, {  // Corrected to match your API route
-                method: 'DELETE',
-            });
+            try {
+                const response = await fetch(`https://127.0.0.1:8000/api/service/${id}`, {  // Send DELETE request
+                    method: 'DELETE',
+                });
 
-            fetchServicesInRange(fromId, toId); // Refresh the list of services after deletion
+                if (!response.ok) {
+                    throw new Error(`Failed to delete service with ID ${id}`);
+                }
+
+                console.log(`Service with ID ${id} deleted successfully`);
+                const fromId = parseInt(document.getElementById('serviceIdFrom').value, 10);
+                const toId = parseInt(document.getElementById('serviceIdTo').value, 10);
+                fetchServicesInRange(fromId, toId); // Refresh the list of services after deletion
+            } catch (error) {
+                console.error(`Error deleting service with ID ${id}:`, error);
+                alert('Failed to delete the service. Please try again.');
+            }
         });
     });
 }
+
+// Initial fetch of services (optional)
+// fetchServicesInRange(1, 5); // Example to fetch services in range of IDs 1 to 5
+
 
 //
 

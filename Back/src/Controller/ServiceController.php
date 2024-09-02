@@ -168,11 +168,27 @@ class ServiceController extends AbstractController
                 $service->setServiceImage($fileContent);
             }
 
-            // Deserialize other fields and update the service
-            $data = json_decode($request->getContent(), true);
-            $service->setNom($data['nom']);
-            $service->setDescription($data['description']);
+            // Get other fields from the form data
+            $nom = $request->request->get('nom');
+            $description = $request->request->get('description');
 
+            // Validate that 'nom' and 'description' are provided
+            if (null === $nom || null === $description) {
+                return new JsonResponse(['error' => 'Nom and Description must be provided'], Response::HTTP_BAD_REQUEST);
+            }
+
+            // Log the values to check what is being set
+            $this->get('logger')->info('Editing Service:', [
+                'id' => $id,
+                'nom' => $nom,
+                'description' => $description,
+            ]);
+
+            // Update the service entity
+            $service->setNom($nom);
+            $service->setDescription($description);
+
+            // Persist the updated service entity
             $this->manager->flush();
 
             return new JsonResponse(null, Response::HTTP_NO_CONTENT);
