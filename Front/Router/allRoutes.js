@@ -36,7 +36,7 @@ export const allRoutes = [
   ),
   new Route("/vetdash", "Espace veterinaire", "/pages/vetdashboard.html", [
     "vet",
-  ]),
+  ], "/js/vetdashboard.js")
 ];
 
 //Le titre s'affiche comme ceci : Route.titre - websitename
