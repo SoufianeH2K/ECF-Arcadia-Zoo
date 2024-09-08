@@ -118,8 +118,10 @@ class RapportVeterinaireController extends AbstractController
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="id", type="integer", example="3"),
-     *             @OA\Property(property="date", type="string", example="Date de creation du rapport"),
-     *             @OA\Property(property="detail", type="string", example="Rapport de visite")
+     *             @OA\Property(property="date", type="string", example="2022-02-02T00:00:00+00:00"),
+     *             @OA\Property(property="detail", type="string", example="Rapport de visite"),
+     *             @OA\Property(property="animal_id", type="integer", example="2"),
+     *             @OA\Property(property="utilisateur_id", type="integer", example="1")
      *         )
      *     ),
      *     @OA\Response(
@@ -131,12 +133,16 @@ class RapportVeterinaireController extends AbstractController
     public function show(int $id, SerializerInterface $serializer): JsonResponse
     {
         $rapportVeterinaire = $this->repository->findOneBy(['id' => $id]);
+
         if ($rapportVeterinaire) {
+            // Include the 'animal_id' and 'utilisateur_id' fields in the response
             $responseData = $serializer->serialize($rapportVeterinaire, 'json', [
                 AbstractNormalizer::ATTRIBUTES => [
                     'id',
                     'date',
                     'detail',
+                    'animal' => ['id'], // Assuming a relation 'animal', include its 'id'
+                    'utilisateur' => ['id'], // Assuming a relation 'utilisateur', include its 'id'
                 ],
             ]);
 
