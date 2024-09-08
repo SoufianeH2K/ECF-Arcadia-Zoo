@@ -7,7 +7,7 @@ const inputCommentsDisplayTo = document.getElementById(
 const displayComments = document.getElementById("displayComments");
 const commentsTable = document.getElementById("commentsTable");
 
-//
+
 // Ensure elements are available
 const serviceTable = document.getElementById('serviceTable').getElementsByTagName('tbody')[0];
 const addServiceButton = document.getElementById('addService');
@@ -184,8 +184,6 @@ function attachEventListeners() {
     });
 }
 
-// Initial fetch of services (optional)
-// fetchServicesInRange(1, 5); // Example to fetch services in range of IDs 1 to 5
 
 
 //
