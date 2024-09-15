@@ -131,6 +131,80 @@ class NouritureController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NOT_FOUND);
     }
 
+    #[Route(name: 'get_nouriture_by_animal', methods: ['GET'])]
+    /**
+     * @OA\Get(
+     *     path="/api/nouriture",
+     *     summary="Obtenir la nourriture par ID d'animal",
+     *     description="Récupère les données de nourriture pour un animal spécifique en fournissant l'ID de l'animal en tant que paramètre de requête.",
+     *     @OA\Parameter(
+     *         name="animal_id",
+     *         in="query",
+     *         description="L'ID de l'animal pour lequel récupérer les enregistrements de nourriture",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Réponse réussie avec les données de nourriture",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="animal_id", type="integer", example=2),
+     *                 @OA\Property(property="type", type="string", example="Viande"),
+     *                 @OA\Property(property="quantite", type="integer", example=2000),
+     *                 @OA\Property(property="date", type="string", format="date", example="2022-02-19"),
+     *                 @OA\Property(property="time", type="string", format="time", example="12:34")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Requête incorrecte - L'ID de l'animal est requis",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="error", type="string", example="L'ID de l'animal est requis")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Non trouvé - Aucun enregistrement de nourriture trouvé pour cet ID d'animal",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(type="string")
+     *         )
+     *     )
+     * )
+     */
+    public function getNouritureByAnimal(Request $request, NouritureRepository $nouritureRepository): JsonResponse
+    {
+        // Get animal_id from the request query parameter
+        $animalId = $request->query->get('animal_id');
+
+        if (!$animalId) {
+            return new JsonResponse(['error' => 'Animal ID is required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Fetch Nouriture entries by animal ID
+        $nouritureEntries = $nouritureRepository->findBy(['animal' => $animalId]);
+
+        if (!$nouritureEntries) {
+            return new JsonResponse([], Response::HTTP_NOT_FOUND);
+        }
+
+        // Serialize the data
+        $responseData = $this->serializer->serialize($nouritureEntries, 'json');
+
+        return new JsonResponse($responseData, Response::HTTP_OK, [], true);
+    }
+
+
+
+
+
+
     #[Route('/{id}', name: 'edit', methods: 'PUT')]
     /**
      * @OA\Put(

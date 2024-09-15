@@ -53,3 +53,97 @@ document.getElementById("btnAddReport").addEventListener("click", function() {
     alert("Une erreur s'est produite. Veuillez réessayer.");
   });
 });
+
+
+// ------------------
+
+
+document.getElementById('habitatCommentForm').addEventListener('submit', function (event) {
+  event.preventDefault(); // Prevent form from submitting the traditional way
+
+  // Collecting form data
+  const habitatId = document.getElementById('habitatId').value;
+  const habitatComment = document.getElementById('habitatComment').value;
+
+  // Constructing the JSON object
+  const habitatData = {
+      commentaire_habitat: habitatComment
+  };
+
+  // Send the data to the backend using Fetch API with the correct endpoint
+  fetch(apiUrl + `habitat/${habitatId}`, {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(habitatData),
+  })
+  .then(response => {
+      if (response.ok) {
+          document.getElementById('statusMessage').innerText = "Commentaire envoyé avec succès!";
+      } else {
+          document.getElementById('statusMessage').innerText = "Erreur lors de l'envoi du commentaire.";
+      }
+  })
+  .catch(error => {
+      console.error("Error:", error);
+      document.getElementById('statusMessage').innerText = "Erreur lors de l'envoi du commentaire.";
+  });
+});
+
+
+// ------------
+
+
+
+document.getElementById('animalFoodForm').addEventListener('submit', function(event) {
+  event.preventDefault(); // Prevent form submission
+
+  const animalId = document.getElementById('animalId').value;
+  const apiNUrl = apiUrl + 'nouriture?animal_id=' + animalId;
+
+  // Clear any existing table rows
+  document.querySelector('#foodTable tbody').innerHTML = '';
+
+  fetch(apiNUrl, {
+      method: 'GET',
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.length > 0) {
+          const tableBody = document.querySelector('#foodTable tbody');
+
+          // Populate the table with API data
+          data.forEach(item => {
+              const formattedDate = formatDate(item.date);
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                  <td>${formattedDate}</td>
+                  <td>${item.type}</td>
+                  <td>${item.quantite}</td>
+              `;
+              tableBody.appendChild(row);
+          });
+      } else {
+          document.getElementById('statusMessage').innerText = "Aucun historique de nourriture trouvé.";
+      }
+  })
+  .catch(error => {
+      console.error("Error fetching food history:", error);
+      document.getElementById('statusMessage').innerText = "Erreur lors du chargement de l'historique de nourriture.";
+  });
+});
+
+// Helper function to format the date to dd/mm/yyyy hh:mm
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based in JavaScript
+  const year = date.getFullYear();
+  
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
