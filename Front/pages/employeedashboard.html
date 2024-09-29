@@ -1,21 +1,18 @@
 <section class="hero">
-  <div class="hero_content">
-    <h1>Espace du personnel</h1>
+  <div class="hero_content text-center p-5 rounded">
+    <h1 class="display-4">Espace du personnel</h1>
   </div>
 </section>
 
-
 <!-- Validation des avis -->
-
-<div class="container mt-3 p-4 rounded shadow-sm">
-  <h2 class="text-center">Les avis des visiteurs</h1>
-  <table class="table table bordered table-hover" id="commentsTable">
-    <thead class="table table-bordered table-striped">
-
+<div class="container mt-5 mx-auto p-4 bg-light rounded shadow-sm" style="max-width: 800px;">
+  <h2 class="text-center mb-4">Les avis des visiteurs</h2>
+  <table class="table table-bordered table-hover">
+    <thead class="table-bordered table-striped">
       <tr>
         <th scope="col">Id</th>
         <th scope="col">Pseudo</th>
-        <th scope="col">Visible sur la page d'acceuil ?</th>
+        <th scope="col">Visible sur la page d'accueil ?</th>
         <th scope="col">Modifier la visibilité ici</th>
         <th scope="col">Commentaire</th>
       </tr>
@@ -23,112 +20,100 @@
     <tbody>
       <!-- Data-->
     </tbody>
-    <div class="input-group mb-3" name="commentsToDisplay" id="commentsToDisplay">
-      <span class="input-group-text">Vous voulez afficher les commentaires de</span>
-      <input name="from" id="inputCommentsDisplayFrom" class="form-control" placeholder="De">
-      <span class="input-group-text">à</span>
-      <input name="to" id="inputCommentsDisplayTo" class="form-control" placeholder="À">
-      <button type="button" class="btn btn-primary text-white" id="displayComments">Afficher</button>
-    </div>
-    
   </table>
-</div>
-
-  <!-- Gestion des services -->
-<div class="container mt-5">
-  <h1>Gestion des services</h1>
-
   <div class="input-group mb-3">
-      <span class="input-group-text">Vous voulez afficher les services de</span>
-      <input type="number" id="serviceIdFrom" class="form-control" placeholder="De">
-      <span class="input-group-text">à:</span>
-      <input type="number" id="serviceIdTo" class="form-control" placeholder="À">
-      <button id="fetchServicesRange" class="btn btn-primary text-white">Afficher</button>
-  </div>
-
-  <table id="serviceTable" class="table table-bordered table-striped">
-      <thead>
-          <tr>
-              <th>ID</th>
-              <th>Nom</th>
-              <th>Description</th>
-              <th>Image</th>
-              <th>Actions</th>
-          </tr>
-      </thead>
-      <tbody>
-          <!-- Data -->
-      </tbody>
-  </table>
-
-  <button id="addService" class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#serviceModal">Ajouter un service</button>
-
-  <!-- Modal -->
-  <div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="serviceModalLabel">Ajouter un service</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  <form id="serviceFormFields" enctype="multipart/form-data">
-                      <input type="hidden" id="serviceId">
-                      <div class="mb-3">
-                          <label for="nom" class="form-label">Nom</label>
-                          <input type="text" id="nom" class="form-control" required>
-                      </div>
-                      <div class="mb-3">
-                          <label for="description" class="form-label">Description</label>
-                          <textarea id="description" class="form-control" required></textarea>
-                      </div>
-                      <div class="mb-3">
-                          <label for="service_image" class="form-label">Image</label>
-                          <input type="file" id="service_image" class="form-control" required>
-                      </div>
-                  </form>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" id="saveService" class="btn btn-primary text-white">Ajouter</button>
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abandoner</button>
-              </div>
-          </div>
-      </div>
+    <span class="input-group-text">Vous voulez afficher les commentaires de</span>
+    <input type="text" class="form-control" id="inputCommentsDisplayFrom" placeholder="De">
+    <span class="input-group-text">à</span>
+    <input type="text" class="form-control" id="inputCommentsDisplayTo" placeholder="À">
+    <button type="button" class="btn btn-primary text-white" id="displayComments">Afficher</button>
   </div>
 </div>
 
-<!-- Ajout des consommation de nouriture pour animeaux -->
+<!-- Gestion des services -->
+<div class="container mt-5 mx-auto p-4 bg-light rounded shadow-sm" style="max-width: 800px;">
+  <h2 class="text-center mb-4">Gestion des services</h2>
+  <div class="input-group mb-3">
+    <span class="input-group-text">Afficher les services de</span>
+    <input type="number" class="form-control" id="serviceIdFrom" placeholder="De">
+    <span class="input-group-text">à</span>
+    <input type="number" class="form-control" id="serviceIdTo" placeholder="À">
+    <button type="button" class="btn btn-primary text-white" id="fetchServicesRange">Afficher</button>
+  </div>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Image</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data -->
+    </tbody>
+  </table>
+  <button type="button" class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#serviceModal">Ajouter un service</button>
+</div>
 
-<div class="form mt-5 mx-auto p-4  rounded" style="max-width: 600px;">
-  <h2 class="text-center mb-4">Details de la nourriture</h2>
+<!-- Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="serviceModalLabel">Ajouter un service</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="serviceFormFields" enctype="multipart/form-data">
+          <input type="hidden" id="serviceId">
+          <div class="mb-3">
+            <label for="nom" class="form-label">Nom</label>
+            <input type="text" id="nom" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" class="form-control" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="service_image" class="form-label">Image</label>
+            <input type="file" id="service_image" class="form-control" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="saveService" class="btn btn-primary text-white">Ajouter</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abandonner</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ajout des consommation de nourriture pour animaux -->
+<div class="form mt-5 mx-auto p-4 bg-light rounded" style="max-width: 600px;">
+  <h2 class="text-center mb-4">Détails de la nourriture</h2>
   <form id="feedingForm">
     <div class="mb-3">
       <label for="animal_id" class="form-label">ID de l'animal</label>
       <input type="number" id="animal_id" name="animal_id" class="form-control" required>
     </div>
-
     <div class="mb-3">
       <label for="type" class="form-label">Type de nourriture</label>
       <input type="text" id="type" name="type" class="form-control" required>
     </div>
-
     <div class="mb-3">
       <label for="quantite" class="form-label">Quantité (en grammes)</label>
       <input type="number" id="quantite" name="quantite" class="form-control" step="0.01" required>
     </div>
-
     <div class="mb-3">
       <label for="date" class="form-label">Date</label>
       <input type="date" id="date" name="date" class="form-control" required>
     </div>
-
     <div class="mb-3">
       <label for="time" class="form-label">Heure</label>
       <input type="time" id="time" name="time" class="form-control" required>
     </div>
-
-    <button type="button" class="btn btn-primary text-white" onclick="submitFeedingData()">Ajouter</button>
+    <button type="button" class="btn btn-primary text-white w-100" onclick="submitFeedingData()">Ajouter</button>
   </form>
 </div>
-
-

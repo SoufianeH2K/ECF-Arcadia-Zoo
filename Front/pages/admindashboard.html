@@ -1,13 +1,13 @@
 <section class="hero">
-  <div class="hero_content">
-    <h1>Espace admin</h1>
+  <div class="hero_content text-center p-5 rounded">
+    <h1 class="display-4">Espace admin</h1>
   </div>
 </section>
 
 <!-- Section : Account creation -->
 <section>
-  <div class="container mt-5">
-    <h1>Création de compte</h1>
+  <div class="container mt-5 mx-auto p-4 bg-light rounded" style="max-width: 600px;">
+    <h2 class="text-center mb-4">Création de compte</h2>
 
     <form id="account-creation-form">
       <div class="mb-3">
@@ -44,91 +44,89 @@
         </select>
       </div>
       
-      <button type="button" class="btn btn-primary text-white mt-2" id="btnCreationForm" disabled>Créer un compte</button>
+      <button type="button" class="btn btn-primary text-white w-100" id="btnCreationForm" disabled>Créer un compte</button>
     </form>
   </div>
 </section>
 
-
- <!-- Gestion des services -->
- <div class="container mt-5">
-  <h1>Gestion des services</h1>
+<!-- Gestion des services -->
+<div class="container mt-5 mx-auto p-4 bg-light rounded" style="max-width: 800px;">
+  <h2 class="text-center mb-4">Gestion des services</h2>
 
   <div class="input-group mb-3">
-      <span class="input-group-text">Vous voulez afficher les services de</span>
-      <input type="number" id="serviceIdFrom" class="form-control" placeholder="De">
-      <span class="input-group-text">à:</span>
-      <input type="number" id="serviceIdTo" class="form-control" placeholder="À">
-      <button id="fetchServicesRange" class="btn btn-primary text-white">Afficher</button>
+    <span class="input-group-text">Vous voulez afficher les services de</span>
+    <input type="number" class="form-control" id="serviceIdFrom" placeholder="De">
+    <span class="input-group-text">à</span>
+    <input type="number" class="form-control" id="serviceIdTo" placeholder="À">
+    <button type="button" class="btn btn-primary text-white">Afficher</button>
   </div>
 
   <table id="serviceTable" class="table table-bordered table-striped">
-      <thead>
-          <tr>
-              <th>ID</th>
-              <th>Nom</th>
-              <th>Description</th>
-              <th>Image</th>
-              <th>Actions</th>
-          </tr>
-      </thead>
-      <tbody>
-          <!-- Data -->
-      </tbody>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Image</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data -->
+    </tbody>
   </table>
 
-  <button id="addService" class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#serviceModal">Ajouter un service</button>
-
-  <!-- Modal -->
-  <div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="serviceModalLabel">Ajouter un service</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  <form id="serviceFormFields" enctype="multipart/form-data">
-                      <input type="hidden" id="serviceId">
-                      <div class="mb-3">
-                          <label for="nom" class="form-label">Nom</label>
-                          <input type="text" id="nom" class="form-control" required>
-                      </div>
-                      <div class="mb-3">
-                          <label for="description" class="form-label">Description</label>
-                          <textarea id="description" class="form-control" required></textarea>
-                      </div>
-                      <div class="mb-3">
-                          <label for="service_image" class="form-label">Image</label>
-                          <input type="file" id="service_image" class="form-control" required>
-                      </div>
-                  </form>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" id="saveService" class="btn btn-primary text-white">Ajouter</button>
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abandoner</button>
-              </div>
-          </div>
-      </div>
-  </div>
+  <button type="button" class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#serviceModal">Ajouter un service</button>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" aria-labelledby="serviceModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="serviceModalLabel">Ajouter un service</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="serviceFormFields" enctype="multipart/form-data">
+          <input type="hidden" id="serviceId">
+          <div class="mb-3">
+            <label for="nom" class="form-label">Nom</label>
+            <input type="text" id="nom" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" class="form-control" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="service_image" class="form-label">Image</label>
+            <input type="file" id="service_image" class="form-control" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary text-white">Ajouter</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abandonner</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Input for Report ID Range -->
 <div class="form mt-5 mx-auto p-4 bg-light rounded" style="max-width: 600px;">
   <h2 class="text-center mb-4">Sélectionner une Plage d'ID de Rapports</h2>
   <form id="reportRangeForm" class="row">
-      <div class="col-md-6 mb-3">
-          <label for="start-id" class="form-label">ID de début :</label>
-          <input type="number" id="start-id" class="form-control" placeholder="ID de début" required>
-      </div>
-      <div class="col-md-6 mb-3">
-          <label for="end-id" class="form-label">ID de fin :</label>
-          <input type="number" id="end-id" class="form-control" placeholder="ID de fin" required>
-      </div>
-      <div class="col-12">
-          <button type="button" class="btn btn-primary w-100" onclick="fetchReportsInRange()">Charger les Rapports</button>
-      </div>
+    <div class="col-md-6 mb-3">
+      <label for="start-id" class="form-label">ID de début :</label>
+      <input type="number" id="start-id" class="form-control" placeholder="ID de début" required>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="end-id" class="form-label">ID de fin :</label>
+      <input type="number" id="end-id" class="form-control" placeholder="ID de fin" required>
+    </div>
+    <div class="col-12">
+      <button type="button" class="btn btn-primary w-100" onclick="fetchReportsInRange()">Charger les Rapports</button>
+    </div>
   </form>
 </div>
 
@@ -136,34 +134,39 @@
 <div class="form mt-5 mx-auto p-4 bg-light rounded" style="max-width: 600px;">
   <h2 class="text-center mb-4">Filtrer les Comptes Rendus</h2>
   <form id="filterForm" class="row">
-      <div class="col-md-6 mb-3">
-          <label for="filter-animal-id" class="form-label">ID de l'Animal :</label>
-          <input type="number" id="filter-animal-id" class="form-control" placeholder="ID de l'animal">
-      </div>
-      <div class="col-md-6 mb-3">
-          <label for="filter-date" class="form-label">Date :</label>
-          <input type="date" id="filter-date" class="form-control">
-      </div>
-      <div class="col-12">
-          <button type="button" class="btn btn-primary w-100" onclick="filterReports()">Filtrer</button>
-      </div>
+    <div class="col-md-6 mb-3">
+      <label for="filter-animal-id" class="form-label">ID de l'Animal :</label>
+      <input type="number" id="filter-animal-id" class="form-control" placeholder="ID de l'animal">
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="filter-date" class="form-label">Date :</label>
+      <input type="date" id="filter-date" class="form-control">
+    </div>
+    <div class="col-12">
+      <button type="button" class="btn btn-primary w-100" onclick="filterReports()">Filtrer</button>
+    </div>
   </form>
 </div>
 
 <!-- Veterinarian Reports Table -->
-<div class="table-responsive mt-5">
-  <table class="table table-bordered table-hover" id="reportsTable">
+<!-- Veterinarian Reports Table -->
+<div class="container mt-5 p-4 bg-light rounded" style="max-width: 1000px;">
+  <h2 class="text-center mb-4">Rapports des Vétérinaires</h2>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover" id="reportsTable">
       <thead class="thead-dark">
-          <tr>
-              <th>ID du Rapport</th>
-              <th>Date</th>
-              <th>ID de l'Animal</th>
-              <th>ID du Vétérinaire</th>
-              <th>Détails du Rapport</th>
-          </tr>
+        <tr>
+          <th>ID du Rapport</th>
+          <th>Date</th>
+          <th>ID de l'Animal</th>
+          <th>ID du Vétérinaire</th>
+          <th>Détails du Rapport</th>
+        </tr>
       </thead>
       <tbody id="reportsTableBody">
-          <!-- Reports will be dynamically loaded here -->
+        <!-- Reports will be dynamically loaded here -->
       </tbody>
-  </table>
+    </table>
+  </div>
 </div>
+
